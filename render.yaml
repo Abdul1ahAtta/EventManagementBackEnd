@@ -1,7 +1,7 @@
 services:
   - type: web
     name: user-service
-    runtime: dotnet
+    runtime: dotnet-8.0
     plan: free
     buildCommand: cd backend/UserService && dotnet publish -c Release
     startCommand: dotnet backend/UserService/bin/Release/net8.0/publish/UserService.dll
@@ -11,7 +11,7 @@ services:
 
   - type: web
     name: event-service
-    runtime: dotnet
+    runtime: dotnet-8.0
     plan: free
     buildCommand: cd backend/EventService && dotnet publish -c Release
     startCommand: dotnet backend/EventService/bin/Release/net8.0/publish/EventService.dll
@@ -21,7 +21,7 @@ services:
 
   - type: web
     name: booking-service
-    runtime: dotnet
+    runtime: dotnet-8.0
     plan: free
     buildCommand: cd backend/BookingService && dotnet publish -c Release
     startCommand: dotnet backend/BookingService/bin/Release/net8.0/publish/BookingService.dll
