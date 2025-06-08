@@ -2,9 +2,9 @@ services:
   - type: web
     name: user-service
     runtime: dotnet
-    rootDirectory: UserService
-    buildCommand: dotnet publish -c Release
-    startCommand: dotnet UserService.dll
+    plan: free
+    buildCommand: cd backend/UserService && dotnet publish -c Release
+    startCommand: dotnet backend/UserService/bin/Release/net8.0/publish/UserService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80
@@ -12,9 +12,9 @@ services:
   - type: web
     name: event-service
     runtime: dotnet
-    rootDirectory: EventService
-    buildCommand: dotnet publish -c Release
-    startCommand: dotnet EventService.dll
+    plan: free
+    buildCommand: cd backend/EventService && dotnet publish -c Release
+    startCommand: dotnet backend/EventService/bin/Release/net8.0/publish/EventService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80
@@ -22,9 +22,9 @@ services:
   - type: web
     name: booking-service
     runtime: dotnet
-    rootDirectory: BookingService
-    buildCommand: dotnet publish -c Release
-    startCommand: dotnet BookingService.dll
+    plan: free
+    buildCommand: cd backend/BookingService && dotnet publish -c Release
+    startCommand: dotnet backend/BookingService/bin/Release/net8.0/publish/BookingService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80 
