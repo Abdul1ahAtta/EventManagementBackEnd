@@ -1,30 +1,27 @@
 services:
   - type: web
     name: user-service
-    runtime: dotnet-8.0
-    plan: free
-    buildCommand: cd backend/UserService && dotnet publish -c Release
-    startCommand: dotnet backend/UserService/bin/Release/net8.0/publish/UserService.dll
+    runtime: node
+    buildCommand: curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --version 8.0.100 && ~/dotnet/dotnet publish -c Release ./backend/UserService/UserService.csproj
+    startCommand: dotnet ./backend/UserService/bin/Release/net8.0/publish/UserService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80
 
   - type: web
     name: event-service
-    runtime: dotnet-8.0
-    plan: free
-    buildCommand: cd backend/EventService && dotnet publish -c Release
-    startCommand: dotnet backend/EventService/bin/Release/net8.0/publish/EventService.dll
+    runtime: node
+    buildCommand: dotnet publish -c Release ./backend/EventService/EventService.csproj
+    startCommand: dotnet ./backend/EventService/bin/Release/net8.0/publish/EventService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80
 
   - type: web
     name: booking-service
-    runtime: dotnet-8.0
-    plan: free
-    buildCommand: cd backend/BookingService && dotnet publish -c Release
-    startCommand: dotnet backend/BookingService/bin/Release/net8.0/publish/BookingService.dll
+    runtime: node
+    buildCommand: dotnet publish -c Release ./backend/BookingService/BookingService.csproj
+    startCommand: dotnet ./backend/BookingService/bin/Release/net8.0/publish/BookingService.dll
     envVars:
       - key: ASPNETCORE_URLS
         value: http://+:80 
