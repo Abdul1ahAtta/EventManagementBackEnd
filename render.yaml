@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: user-service
+    runtime: dotnet
+    rootDirectory: UserService
+    buildCommand: dotnet publish -c Release
+    startCommand: dotnet UserService.dll
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:80
+
+  - type: web
+    name: event-service
+    runtime: dotnet
+    rootDirectory: EventService
+    buildCommand: dotnet publish -c Release
+    startCommand: dotnet EventService.dll
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:80
+
+  - type: web
+    name: booking-service
+    runtime: dotnet
+    rootDirectory: BookingService
+    buildCommand: dotnet publish -c Release
+    startCommand: dotnet BookingService.dll
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:80 
