@@ -41,8 +41,12 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Configure database
+var connectionString = builder.Environment.IsDevelopment() 
+    ? builder.Configuration.GetConnectionString("DefaultConnection")
+    : $"Data Source={Path.Join(Environment.GetEnvironmentVariable("RENDER_APP_DATA"), "Events.db")}";
+
 builder.Services.AddDbContext<EventDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 // Configure CORS for development
 if (builder.Environment.IsDevelopment())
@@ -64,9 +68,16 @@ else
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>())
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
+            policy.SetIsOriginAllowed(origin => 
+            {
+                var host = new Uri(origin).Host;
+                return host == "localhost" || 
+                       host.EndsWith("azurestaticapps.net") ||
+                       host.EndsWith("onrender.com");
+            })
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
         });
     });
 }
@@ -94,8 +105,33 @@ app.MapControllers();
 // Create database and apply migrations
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<EventDbContext>();
-    context.Database.Migrate();
+    try
+    {
+        var context = scope.ServiceProvider.GetRequiredService<EventDbContext>();
+        
+        // Ensure the directory exists
+        if (!builder.Environment.IsDevelopment())
+        {
+            var dbPath = Path.GetDirectoryName(connectionString.Replace("Data Source=", ""));
+            if (!string.IsNullOrEmpty(dbPath) && !Directory.Exists(dbPath))
+            {
+                Directory.CreateDirectory(dbPath);
+            }
+        }
+        
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+        
+        // In development, we might want to throw the error
+        if (builder.Environment.IsDevelopment())
+        {
+            throw;
+        }
+    }
 }
 
 app.Run();

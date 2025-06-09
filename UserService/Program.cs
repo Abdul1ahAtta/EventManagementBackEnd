@@ -62,10 +62,16 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        policy.SetIsOriginAllowed(origin => 
+        {
+            var host = new Uri(origin).Host;
+            return host == "localhost" || 
+                   host.EndsWith("azurestaticapps.net") ||
+                   host.EndsWith("onrender.com");
+        })
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
     });
 });
 
